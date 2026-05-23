@@ -28,7 +28,8 @@ export default function RegisterPage() {
     router.push('/login')
   }
 
-  const inputStyle = {padding:'10px',background:'transparent',fontSize:'16px',fontWeight:700,border:'none',borderBottom:'2.5px solid #111',outline:'none',width:'100%'} as React.CSSProperties
+  const sel:React.CSSProperties = {flex:1,padding:'10px',background:'transparent',fontSize:'16px',fontWeight:700,border:'none',borderBottom:'2.5px solid #111',outline:'none'}
+  const inp:React.CSSProperties = {width:'100%',padding:'10px',background:'transparent',fontSize:'16px',border:'none',borderBottom:'2.5px solid #111',outline:'none'}
 
   return (
     <main style={{background:'#5DD85A',minHeight:'100vh',display:'flex',flexDirection:'column',padding:'40px 32px',gap:'20px',maxWidth:'400px',margin:'0 auto'}}>
@@ -37,22 +38,22 @@ export default function RegisterPage() {
       <div>
         <div style={{fontSize:'13px',fontWeight:700,opacity:0.6,marginBottom:'6px'}}>학년 / 반 / 번호</div>
         <div style={{display:'flex',gap:'8px'}}>
-          <select value={grade} onChange={e=>setGrade(e.target.value)} style={inputStyle}>
+          <select value={grade} onChange={e=>setGrade(e.target.value)} style={sel}>
             <option value="1">1학년</option><option value="2">2학년</option><option value="3">3학년</option>
           </select>
-          <select value={classNum} onChange={e=>setClassNum(e.target.value)} style={inputStyle}>
+          <select value={classNum} onChange={e=>setClassNum(e.target.value)} style={sel}>
             {[1,2,3,4,5].map(n=><option key={n} value={n}>{n}반</option>)}
           </select>
-          <input value={number} onChange={e=>setNumber(e.target.value)} type="number" placeholder="번호" style={inputStyle} />
+          <input value={number} onChange={e=>setNumber(e.target.value)} type="number" placeholder="번호" style={{...sel,flex:1}} />
         </div>
       </div>
       <div>
         <div style={{fontSize:'13px',fontWeight:700,opacity:0.6,marginBottom:'6px'}}>비밀번호</div>
-        <input value={password} onChange={e=>setPassword(e.target.value)} type="password" placeholder="비밀번호 설정" style={inputStyle} />
+        <input value={password} onChange={e=>setPassword(e.target.value)} type="password" placeholder="비밀번호 설정" style={inp} />
       </div>
       <div>
         <div style={{fontSize:'13px',fontWeight:700,opacity:0.6,marginBottom:'6px'}}>비밀번호 확인</div>
-        <input value={password2} onChange={e=>setPassword2(e.target.value)} type="password" placeholder="비밀번호 재입력" style={inputStyle} />
+        <input value={password2} onChange={e=>setPassword2(e.target.value)} type="password" placeholder="비밀번호 재입력" style={inp} />
       </div>
       <button onClick={handleRegister} style={{background:'#111',color:'#fff',border:'none',borderRadius:'12px',padding:'16px',fontSize:'16px',fontWeight:700,cursor:'pointer',marginTop:'8px'}}>가입하기</button>
     </main>
