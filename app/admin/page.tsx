@@ -29,29 +29,44 @@ export default function AdminPage() {
   async function fetchPending() {
     const { data, error } = await supabase
       .from('point_requests')
-      .select('*, users(login_code)')
+      .select('*')
       .eq('status', 'pending')
       .order('created_at', { ascending: false })
     if (error) { alert('포인트 불러오기 실패: ' + error.message); return }
-    if (data) setPending(data)
+    if (!data) return
+    const withUsers = await Promise.all(data.map(async r => {
+      const { data: u } = await supabase.from('users').select('login_code').eq('id', r.user_id).single()
+      return { ...r, login_code: u?.login_code }
+    }))
+    setPending(withUsers)
   }
 
   async function fetchPosts() {
     const { data, error } = await supabase
       .from('posts')
-      .select('*, users(login_code)')
+      .select('*')
       .order('created_at', { ascending: false })
     if (error) { alert('게시물 불러오기 실패: ' + error.message); return }
-    if (data) setPosts(data)
+    if (!data) return
+    const withUsers = await Promise.all(data.map(async p => {
+      const { data: u } = await supabase.from('users').select('login_code').eq('id', p.user_id).single()
+      return { ...p, login_code: u?.login_code }
+    }))
+    setPosts(withUsers)
   }
 
   async function fetchOrders() {
     const { data, error } = await supabase
       .from('orders')
-      .select('*, users(login_code), products(name)')
+      .select('*, products(name)')
       .order('created_at', { ascending: false })
     if (error) { alert('구매내역 불러오기 실패: ' + error.message); return }
-    if (data) setOrders(data)
+    if (!data) return
+    const withUsers = await Promise.all(data.map(async o => {
+      const { data: u } = await supabase.from('users').select('login_code').eq('id', o.user_id).single()
+      return { ...o, login_code: u?.login_code }
+    }))
+    setOrders(withUsers)
   }
 
   async function approve(r: any) {
@@ -109,9 +124,8 @@ export default function AdminPage() {
             {pending.map(r=>(
               <div key={r.id} style={{background:'#fff',margin:'0 16px 8px',padding:'14px 16px',display:'flex',alignItems:'center',gap:'12px'}}>
                 <div style={{flex:1}}>
-                  <div style={{fontSize:'13px',fontWeight:700,color:'#111'}}>{r.users?.login_code}</div>
+                  <div style={{fontSize:'13px',fontWeight:700,color:'#111'}}>{r.login_code}</div>
                   <div style={{fontSize:'12px',fontWeight:700,color:'#888',marginTop:'2px'}}>{missionLabel(r.mission_type)} · +{r.points.toLocaleString()}P</div>
-                  {r.post_id && <a href={`/post/${r.post_id}`} style={{fontSize:'11px',color:'#5DD85A',fontWeight:700}}>게시물 보기</a>}
                 </div>
                 <div style={{display:'flex',gap:'6px'}}>
                   <button onClick={()=>approve(r)} style={btn}>승인</button>
@@ -128,7 +142,7 @@ export default function AdminPage() {
             {posts.map(p=>(
               <div key={p.id} style={{background:'#fff',margin:'0 16px 8px',padding:'14px 16px',display:'flex',alignItems:'center',gap:'12px'}}>
                 <div style={{flex:1}}>
-                  <div style={{fontSize:'13px',fontWeight:700,color:'#111'}}>{p.users?.login_code} · {missionLabel(p.mission_type)}</div>
+                  <div style={{fontSize:'13px',fontWeight:700,color:'#111'}}>{p.login_code} · {missionLabel(p.mission_type)}</div>
                   <div style={{fontSize:'12px',fontWeight:700,color:'#888',marginTop:'2px'}}>{p.description?.slice(0,30)}...</div>
                 </div>
                 <div style={{display:'flex',gap:'6px',flexDirection:'column'}}>
@@ -146,7 +160,7 @@ export default function AdminPage() {
             {orders.map(o=>(
               <div key={o.id} style={{background:'#fff',margin:'0 16px 8px',padding:'14px 16px',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
                 <div>
-                  <div style={{fontSize:'13px',fontWeight:700,color:'#111'}}>{o.users?.login_code} · {o.products?.name} {o.quantity}개</div>
+                  <div style={{fontSize:'13px',fontWeight:700,color:'#111'}}>{o.login_code} · {o.products?.name} {o.quantity}개</div>
                   <div style={{fontSize:'12px',fontWeight:700,color:'#888',marginTop:'2px'}}>{o.total_points.toLocaleString()}P · {new Date(o.created_at).toLocaleDateString('ko-KR')}</div>
                 </div>
                 <span style={{fontSize:'11px',fontWeight:700,padding:'4px 10px',background:'#d4edda',color:'#155724'}}>완료</span>
