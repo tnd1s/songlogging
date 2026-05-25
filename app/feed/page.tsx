@@ -8,6 +8,7 @@ export default function FeedPage() {
   const [posts, setPosts] = useState<any[]>([])
   const [myPoints, setMyPoints] = useState(0)
   const [comments, setComments] = useState<{[key:string]:string}>({})
+  const [myId, setMyId] = useState('')
 
   useEffect(() => {
     checkAuth()
@@ -17,16 +18,25 @@ export default function FeedPage() {
   async function checkAuth() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { router.push('/login'); return }
+    setMyId(user.id)
     const { data } = await supabase.from('users').select('points').eq('id', user.id).single()
     if (data) setMyPoints(data.points)
   }
 
   async function fetchPosts() {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('posts')
-      .select('*, users(login_code), likes(user_id), comments(id, content, users(login_code))')
+      .select('*')
       .order('created_at', { ascending: false })
-    if (data) setPosts(data)
+    if (error || !data) return
+
+    const withDetails = await Promise.all(data.map(async p => {
+      const { data: u } = await supabase.from('users').select('login_code').eq('id', p.user_id).single()
+      const { data: likes } = await supabase.from('likes').select('user_id').eq('post_id', p.id)
+      const { data: cmts } = await supabase.from('comments').select('*').eq('post_id', p.id).order('created_at', { ascending: true })
+      return { ...p, login_code: u?.login_code, likes: likes || [], comments: cmts || [] }
+    }))
+    setPosts(withDetails)
   }
 
   async function toggleLike(postId: string) {
@@ -66,12 +76,16 @@ export default function FeedPage() {
         <span style={{fontSize:'13px',fontWeight:700,color:'#5DD85A'}}>환경의 날 이벤트! 이번 주 포인트 2배 🎉</span>
       </div>
 
+      {posts.length === 0 && (
+        <div style={{textAlign:'center',padding:'40px 20px',fontSize:'14px',fontWeight:700,color:'#111',opacity:0.5}}>아직 게시물이 없어요</div>
+      )}
+
       {posts.map(post => (
         <div key={post.id} style={{background:'#fff',margin:'0 16px 14px'}}>
           <div style={{padding:'14px 16px 10px',display:'flex',alignItems:'center',gap:'10px'}}>
-            <div style={{width:'40px',height:'40px',borderRadius:'50%',background:'#111',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'13px',fontWeight:700,color:'#5DD85A',flexShrink:0}}>{post.users?.login_code?.slice(0,2).toUpperCase()}</div>
+            <div style={{width:'40px',height:'40px',borderRadius:'50%',background:'#111',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'13px',fontWeight:700,color:'#5DD85A',flexShrink:0}}>{post.login_code?.slice(0,2).toUpperCase()}</div>
             <div>
-              <div style={{fontSize:'14px',fontWeight:700,color:'#111'}}>{post.users?.login_code}</div>
+              <div style={{fontSize:'14px',fontWeight:700,color:'#111'}}>{post.login_code}</div>
               <div style={{fontSize:'11px',color:'#888'}}>{post.mission_type} · {new Date(post.created_at).toLocaleDateString('ko-KR')}</div>
             </div>
             {post.is_notice && <span style={{marginLeft:'auto',background:'#111',color:'#5DD85A',fontSize:'11px',fontWeight:700,padding:'3px 10px'}}>공지</span>}
@@ -79,7 +93,7 @@ export default function FeedPage() {
           {post.image_url && <img src={post.image_url} style={{width:'100%',height:'240px',objectFit:'cover'}} />}
           <div style={{padding:'12px 16px',fontSize:'14px',fontWeight:700,color:'#111',lineHeight:1.5}}>{post.description}</div>
           <div style={{padding:'10px 16px',display:'flex',gap:'16px',borderTop:'2px solid #111'}}>
-            <button onClick={()=>toggleLike(post.id)} style={{background:'none',border:'none',cursor:'pointer',fontSize:'13px',fontWeight:700,color:'#111'}}>❤️ {post.likes?.length || 0}</button>
+            <button onClick={()=>toggleLike(post.id)} style={{background:'none',border:'none',cursor:'pointer',fontSize:'13px',fontWeight:700,color: post.likes.some((l:any)=>l.user_id===myId) ? '#E24B4A' : '#111'}}>❤️ {post.likes?.length || 0}</button>
             <span style={{fontSize:'13px',fontWeight:700,color:'#111'}}>💬 {post.comments?.length || 0}</span>
           </div>
           <div style={{padding:'4px 16px 12px'}}>
