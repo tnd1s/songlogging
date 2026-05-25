@@ -13,7 +13,14 @@ export default function LoginPage() {
     const email = `${code}@songlogging.school`
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) { alert('로그인 실패: 코드 또는 비밀번호를 확인해주세요'); return }
-    router.push('/feed')
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+    const { data } = await supabase.from('users').select('is_admin').eq('id', user.id).single()
+    if (data?.is_admin) {
+      router.push('/admin')
+    } else {
+      router.push('/feed')
+    }
   }
 
   return (
@@ -30,7 +37,7 @@ export default function LoginPage() {
         </div>
         <div>
           <div style={{fontSize:'13px',fontWeight:700,color:'#111',marginBottom:'6px'}}>비밀번호</div>
-          <input value={password} onChange={e=>setPassword(e.target.value)} type="password" placeholder="비밀번호 입력" style={{width:'100%',padding:'14px',border:'none',borderBottom:'2.5px solid #111',background:'transparent',fontSize:'16px',fontWeight:700,outline:'none',color:'#111'}} />
+          <input value={password} onChange={e=>setPassword(e.target.value)} type="password" placeholder="비밀번호 입력" style={{width:'100%',padding:'14px',border:'none',borderBottom:'2.5px solid #111',background:'transparent',fontSize:'16px',fontWeight:700,outline:'none',color:'#111'}} onKeyDown={e=>e.key==='Enter'&&handleLogin()} />
         </div>
         <button onClick={handleLogin} style={{width:'100%',background:'#111',color:'#fff',border:'none',borderRadius:'0',padding:'16px',fontSize:'16px',fontWeight:700,cursor:'pointer',marginTop:'8px'}}>로그인</button>
         <button onClick={()=>router.push('/register')} style={{width:'100%',background:'#111',color:'#fff',border:'none',borderRadius:'0',padding:'16px',fontSize:'16px',fontWeight:700,cursor:'pointer'}}>회원가입</button>
