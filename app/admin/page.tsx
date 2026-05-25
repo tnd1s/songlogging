@@ -9,10 +9,10 @@ export default function AdminPage() {
   const [pending, setPending] = useState<any[]>([])
   const [posts, setPosts] = useState<any[]>([])
   const [orders, setOrders] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     checkAdmin()
-    fetchAll()
   }, [])
 
   async function checkAdmin() {
@@ -20,26 +20,37 @@ export default function AdminPage() {
     if (!user) { router.push('/login'); return }
     const { data } = await supabase.from('users').select('is_admin').eq('id', user.id).single()
     if (!data?.is_admin) { router.push('/feed'); return }
-  }
-
-  async function fetchAll() {
+    setLoading(false)
     fetchPending()
     fetchPosts()
     fetchOrders()
   }
 
   async function fetchPending() {
-    const { data } = await supabase.from('point_requests').select('*, users(login_code)').eq('status', 'pending').order('created_at', { ascending: false })
+    const { data, error } = await supabase
+      .from('point_requests')
+      .select('*, users(login_code)')
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false })
+    if (error) { alert('포인트 불러오기 실패: ' + error.message); return }
     if (data) setPending(data)
   }
 
   async function fetchPosts() {
-    const { data } = await supabase.from('posts').select('*, users(login_code)').order('created_at', { ascending: false })
+    const { data, error } = await supabase
+      .from('posts')
+      .select('*, users(login_code)')
+      .order('created_at', { ascending: false })
+    if (error) { alert('게시물 불러오기 실패: ' + error.message); return }
     if (data) setPosts(data)
   }
 
   async function fetchOrders() {
-    const { data } = await supabase.from('orders').select('*, users(login_code), products(name)').order('created_at', { ascending: false })
+    const { data, error } = await supabase
+      .from('orders')
+      .select('*, users(login_code), products(name)')
+      .order('created_at', { ascending: false })
+    if (error) { alert('구매내역 불러오기 실패: ' + error.message); return }
     if (data) setOrders(data)
   }
 
@@ -74,7 +85,9 @@ export default function AdminPage() {
 
   const missionLabel = (t:string) => t==='walk'?'🚶 걷기':t==='trash'?'🗑️ 쓰레기 줍기':'♻️ 분리수거'
   const btn:React.CSSProperties = {fontSize:'12px',fontWeight:700,padding:'6px 12px',cursor:'pointer',border:'2px solid #111',background:'#111',color:'#fff'}
-  const btnOut:React.CSSProperties = {fontSize:'12px',fontWeight:700,padding:'6px 12px',cursor:'pointer',border:'2px solid #111',background:'#fff',color:'#111'}
+  const btnOut:React.CSSProperties = {fontSize:'12px',fontWeight:700,padding:'6px 12px',cursor:'pointer',border:'2px solid #E24B4A',background:'#fff',color:'#E24B4A'}
+
+  if (loading) return <main style={{background:'#5DD85A',minHeight:'100vh',maxWidth:'430px',margin:'0 auto',display:'flex',alignItems:'center',justifyContent:'center'}}><div style={{fontSize:'18px',fontWeight:700,color:'#111'}}>로딩 중...</div></main>
 
   return (
     <main style={{background:'#5DD85A',minHeight:'100vh',maxWidth:'430px',margin:'0 auto',fontFamily:'inherit'}}>
@@ -98,10 +111,11 @@ export default function AdminPage() {
                 <div style={{flex:1}}>
                   <div style={{fontSize:'13px',fontWeight:700,color:'#111'}}>{r.users?.login_code}</div>
                   <div style={{fontSize:'12px',fontWeight:700,color:'#888',marginTop:'2px'}}>{missionLabel(r.mission_type)} · +{r.points.toLocaleString()}P</div>
+                  {r.post_id && <a href={`/post/${r.post_id}`} style={{fontSize:'11px',color:'#5DD85A',fontWeight:700}}>게시물 보기</a>}
                 </div>
                 <div style={{display:'flex',gap:'6px'}}>
                   <button onClick={()=>approve(r)} style={btn}>승인</button>
-                  <button onClick={()=>reject(r.id)} style={{...btnOut,border:'2px solid #E24B4A',color:'#E24B4A'}}>반려</button>
+                  <button onClick={()=>reject(r.id)} style={btnOut}>반려</button>
                 </div>
               </div>
             ))}
@@ -119,7 +133,7 @@ export default function AdminPage() {
                 </div>
                 <div style={{display:'flex',gap:'6px',flexDirection:'column'}}>
                   <button onClick={()=>toggleNotice(p)} style={btn}>{p.is_notice?'공지해제':'공지'}</button>
-                  <button onClick={()=>deletePost(p.id)} style={{...btnOut,border:'2px solid #E24B4A',color:'#E24B4A'}}>삭제</button>
+                  <button onClick={()=>deletePost(p.id)} style={btnOut}>삭제</button>
                 </div>
               </div>
             ))}
