@@ -1,0 +1,22 @@
+{
+  "name": "송로깅",
+  "short_name": "송로깅",
+  "description": "걷고, 줍고, 분리하고 — 함께 만드는 깨끗한 학교",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#5DD85A",
+  "theme_color": "#5DD85A",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
