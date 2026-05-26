@@ -94,7 +94,7 @@ export default function MissionPage() {
   return (
     <main style={{background:'#5DD85A',minHeight:'100vh',maxWidth:'430px',margin:'0 auto',paddingBottom:'64px',fontFamily:'inherit'}}>
       <div style={{padding:'18px 20px 10px',position:'sticky',top:0,background:'#5DD85A',zIndex:10}}>
-        <div style={{fontSize:'22px',fontWeight:900,color:'#111'}}>미션 </div>
+        <div style={{fontSize:'22px',fontWeight:900,color:'#111'}}><span style={{display:'flex',alignItems:'center',gap:'8px'}}><img src='/icon.png' style={{width:'28px',height:'28px',objectFit:'contain'}} /><span>미션</span></span></div>
       </div>
 
       <div style={{margin:'0 16px 16px',background:'#111',padding:'20px'}}>
