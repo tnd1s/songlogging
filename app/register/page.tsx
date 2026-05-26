@@ -8,21 +8,35 @@ export default function RegisterPage() {
   const [code, setCode] = useState('')
   const [password, setPassword] = useState('')
   const [password2, setPassword2] = useState('')
+  const [loading, setLoading] = useState(false)
 
   async function handleRegister() {
     if (!code) { alert('로그인 코드를 입력해주세요'); return }
     if (!password) { alert('비밀번호를 입력해주세요'); return }
     if (password !== password2) { alert('비밀번호가 일치하지 않습니다'); return }
+    setLoading(true)
+
     const email = `${code}@songlogging.school`
+
     const { data, error } = await supabase.auth.signUp({ email, password })
-    if (error) { alert('가입 실패: ' + error.message); return }
-    await supabase.from('users').insert({
-      id: data.user!.id,
-      grade: 0,
-      class: 0,
-      number: 0,
+    if (error) { alert('가입 실패: ' + error.message); setLoading(false); return }
+    if (!data.user) { alert('가입 실패: 다시 시도해주세요'); setLoading(false); return }
+
+    const { error: insertError } = await supabase.from('users').insert({
+      id: data.user.id,
       login_code: code,
+      points: 0,
+      is_admin: false,
     })
+
+    if (insertError) {
+      alert('가입 실패: ' + insertError.message)
+      await supabase.auth.signOut()
+      setLoading(false)
+      return
+    }
+
+    setLoading(false)
     alert('가입 완료! 로그인해주세요 🎉')
     router.push('/login')
   }
@@ -45,7 +59,7 @@ export default function RegisterPage() {
         <div style={{fontSize:'13px',fontWeight:700,color:'#111',marginBottom:'6px'}}>비밀번호 확인</div>
         <input value={password2} onChange={e=>setPassword2(e.target.value)} type="password" placeholder="비밀번호 재입력" style={inputStyle} />
       </div>
-      <button onClick={handleRegister} style={{width:'100%',background:'#111',color:'#fff',border:'none',borderRadius:'0',padding:'16px',fontSize:'16px',fontWeight:700,cursor:'pointer',marginTop:'8px'}}>가입하기</button>
+      <button onClick={handleRegister} disabled={loading} style={{width:'100%',background:'#111',color:'#fff',border:'none',borderRadius:'0',padding:'16px',fontSize:'16px',fontWeight:700,cursor:'pointer',marginTop:'8px'}}>{loading?'가입 중...':'가입하기'}</button>
     </main>
   )
 }

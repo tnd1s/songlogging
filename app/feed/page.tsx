@@ -12,7 +12,6 @@ export default function FeedPage() {
 
   useEffect(() => {
     checkAuth()
-    fetchPosts()
   }, [])
 
   async function checkAuth() {
@@ -21,12 +20,15 @@ export default function FeedPage() {
     setMyId(user.id)
     const { data } = await supabase.from('users').select('points').eq('id', user.id).single()
     if (data) setMyPoints(data.points)
+    fetchPosts(user.id)
   }
 
-  async function fetchPosts() {
+  async function fetchPosts(uid?: string) {
+    const currentId = uid || myId
     const { data, error } = await supabase
       .from('posts')
       .select('*')
+      .order('is_notice', { ascending: false })
       .order('created_at', { ascending: false })
     if (error || !data) return
 
@@ -67,7 +69,10 @@ export default function FeedPage() {
   return (
     <main style={{background:'#5DD85A',minHeight:'100vh',maxWidth:'430px',margin:'0 auto',paddingBottom:'64px',fontFamily:'inherit'}}>
       <div style={{padding:'18px 20px 10px',display:'flex',alignItems:'center',justifyContent:'space-between',position:'sticky',top:0,background:'#5DD85A',zIndex:10}}>
-        <div style={{fontSize:'22px',fontWeight:900,color:'#111'}}><span style={{display:'flex',alignItems:'center',gap:'8px'}}><img src='/icon.png' style={{width:'28px',height:'28px',objectFit:'contain'}} /><span>송로깅</span></span></div>
+        <div style={{fontSize:'22px',fontWeight:900,color:'#111',display:'flex',alignItems:'center',gap:'8px'}}>
+          <img src="/icon.png" style={{width:'28px',height:'28px',objectFit:'contain'}} />
+          <span>송로깅</span>
+        </div>
         <div style={{background:'#111',color:'#5DD85A',padding:'6px 14px',fontSize:'13px',fontWeight:700}}>{myPoints.toLocaleString()} P</div>
       </div>
 
@@ -93,7 +98,9 @@ export default function FeedPage() {
           {post.image_url && <img src={post.image_url} style={{width:'100%',height:'240px',objectFit:'cover'}} />}
           <div style={{padding:'12px 16px',fontSize:'14px',fontWeight:700,color:'#111',lineHeight:1.5}}>{post.description}</div>
           <div style={{padding:'10px 16px',display:'flex',gap:'16px',borderTop:'2px solid #111'}}>
-            <button onClick={()=>toggleLike(post.id)} style={{background:'none',border:'none',cursor:'pointer',fontSize:'13px',fontWeight:700,color: post.likes.some((l:any)=>l.user_id===myId) ? '#E24B4A' : '#111'}}>❤️ {post.likes?.length || 0}</button>
+            <button onClick={()=>toggleLike(post.id)} style={{background:'none',border:'none',cursor:'pointer',fontSize:'13px',fontWeight:700,color: post.likes.some((l:any)=>l.user_id===myId) ? '#E24B4A' : '#111'}}>
+              ❤️ {post.likes?.length || 0}
+            </button>
             <span style={{fontSize:'13px',fontWeight:700,color:'#111'}}>💬 {post.comments?.length || 0}</span>
           </div>
           <div style={{padding:'4px 16px 12px'}}>
@@ -101,7 +108,13 @@ export default function FeedPage() {
               <div key={c.id} style={{fontSize:'12px',fontWeight:700,color:'#111',marginBottom:'3px'}}>· {c.content}</div>
             ))}
             <div style={{display:'flex',gap:'6px',marginTop:'6px'}}>
-              <input value={comments[post.id]||''} onChange={e=>setComments(prev=>({...prev,[post.id]:e.target.value}))} placeholder="댓글 달기..." style={{flex:1,border:'none',borderBottom:'2px solid #111',background:'transparent',padding:'6px 4px',fontSize:'13px',fontWeight:700,outline:'none',color:'#111'}} />
+              <input
+                value={comments[post.id]||''}
+                onChange={e=>setComments(prev=>({...prev,[post.id]:e.target.value}))}
+                onKeyDown={e=>e.key==='Enter'&&addComment(post.id)}
+                placeholder="댓글 달기..."
+                style={{flex:1,border:'none',borderBottom:'2px solid #111',background:'transparent',padding:'6px 4px',fontSize:'13px',fontWeight:700,outline:'none',color:'#111'}}
+              />
               <button onClick={()=>addComment(post.id)} style={btn}>등록</button>
             </div>
           </div>
