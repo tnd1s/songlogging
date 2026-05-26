@@ -17,6 +17,7 @@ export default function AdminPage() {
   const [posting, setPosting] = useState(false)
   const [capModal, setCapModal] = useState<any|null>(null)
   const [capPoint, setCapPoint] = useState(500)
+  const [keyringModal, setKeyringModal] = useState<any|null>(null)
 
   useEffect(() => { checkAdmin() }, [])
 
@@ -62,8 +63,9 @@ export default function AdminPage() {
 
   async function approve(r: any) {
     if (r.mission_type === 'cap') {
-      setCapModal(r)
-      return
+      const isKeyring = r.description?.includes('키링')
+      if (isKeyring) { setKeyringModal(r); return }
+      setCapModal(r); return
     }
     await supabase.from('point_requests').update({ status: 'approved', reviewed_at: new Date().toISOString() }).eq('id', r.id)
     await supabase.rpc('increment_points', { user_id: r.user_id, amount: r.points })
@@ -76,6 +78,20 @@ export default function AdminPage() {
     await supabase.rpc('increment_points', { user_id: capModal.user_id, amount: capPoint })
     setCapModal(null)
     alert(`${capPoint}P 지급되었습니다 ✅`)
+    fetchPending()
+  }
+
+  async function approveKeyring() {
+    await supabase.from('point_requests').update({ status: 'approved', reviewed_at: new Date().toISOString(), points: 0 }).eq('id', keyringModal.id)
+    setKeyringModal(null)
+    alert('키링 수령 승인 완료 ✅')
+    fetchPending()
+  }
+
+  async function rejectKeyring() {
+    await supabase.from('point_requests').update({ status: 'rejected', reviewed_at: new Date().toISOString() }).eq('id', keyringModal.id)
+    setKeyringModal(null)
+    alert('키링 수령 반려 처리되었습니다')
     fetchPending()
   }
 
@@ -100,6 +116,12 @@ export default function AdminPage() {
     if (!confirm('댓글을 삭제할까요?')) return
     await supabase.from('comments').delete().eq('id', commentId)
     fetchPosts()
+  }
+
+  async function completeOrder(id: string) {
+    await supabase.from('orders').update({ status: 'done' }).eq('id', id)
+    alert('수령 완료 처리되었습니다 ✅')
+    fetchOrders()
   }
 
   async function handleWrite() {
@@ -133,7 +155,10 @@ export default function AdminPage() {
   return (
     <main style={{background:'#5DD85A',minHeight:'100vh',maxWidth:'430px',margin:'0 auto',fontFamily:'inherit'}}>
       <div style={{background:'#111',padding:'18px 20px',display:'flex',alignItems:'center',justifyContent:'space-between',position:'sticky',top:0,zIndex:10}}>
-        <div style={{fontSize:'22px',fontWeight:900,color:'#5DD85A'}}><span style={{display:'flex',alignItems:'center',gap:'8px'}}><img src='/icon.png' style={{width:'28px',height:'28px',objectFit:'contain'}} /><span>관리자</span></span></div>
+        <div style={{fontSize:'22px',fontWeight:900,color:'#5DD85A',display:'flex',alignItems:'center',gap:'8px'}}>
+          <img src="/icon.png" style={{width:'28px',height:'28px',objectFit:'contain'}} />
+          <span>관리자</span>
+        </div>
         <button onClick={handleLogout} style={{background:'none',border:'none',color:'#888',fontSize:'13px',fontWeight:700,cursor:'pointer'}}>로그아웃</button>
       </div>
 
@@ -153,7 +178,7 @@ export default function AdminPage() {
                 <div style={{display:'flex',alignItems:'center',gap:'12px'}}>
                   <div style={{flex:1}}>
                     <div style={{fontSize:'13px',fontWeight:700,color:'#111'}}>{r.login_code}</div>
-                    <div style={{fontSize:'12px',fontWeight:700,color:'#888',marginTop:'2px'}}>{missionLabel(r.mission_type)} · +{r.points.toLocaleString()}P</div>
+                    <div style={{fontSize:'12px',fontWeight:700,color:'#888',marginTop:'2px'}}>{missionLabel(r.mission_type)} · {r.description?.includes('키링') ? '🪙 키링 교환 신청' : `+${r.points.toLocaleString()}P`}</div>
                     {r.description && <div style={{fontSize:'11px',color:'#5DD85A',fontWeight:700,marginTop:'2px'}}>{r.description}</div>}
                   </div>
                   <div style={{display:'flex',gap:'6px'}}>
@@ -230,7 +255,10 @@ export default function AdminPage() {
                   <div style={{fontSize:'13px',fontWeight:700,color:'#111'}}>{o.login_code} · {o.products?.name} {o.quantity}개</div>
                   <div style={{fontSize:'12px',fontWeight:700,color:'#888',marginTop:'2px'}}>{o.total_points.toLocaleString()}P · {new Date(o.created_at).toLocaleDateString('ko-KR')}</div>
                 </div>
-                <span style={{fontSize:'11px',fontWeight:700,padding:'4px 10px',background:'#d4edda',color:'#155724'}}>완료</span>
+                {o.status === 'done'
+                  ? <span style={{fontSize:'11px',fontWeight:700,padding:'4px 10px',background:'#d4edda',color:'#155724'}}>완료</span>
+                  : <button onClick={()=>completeOrder(o.id)} style={{fontSize:'11px',fontWeight:700,padding:'6px 12px',background:'#111',color:'#fff',border:'none',cursor:'pointer'}}>수령완료</button>
+                }
               </div>
             ))}
           </>
@@ -267,6 +295,18 @@ export default function AdminPage() {
             </div>
             <button onClick={approveCapPoint} style={{width:'100%',background:'#111',color:'#fff',border:'none',padding:'14px',fontSize:'15px',fontWeight:700,cursor:'pointer',marginBottom:'8px'}}>포인트 지급</button>
             <button onClick={()=>setCapModal(null)} style={{width:'100%',background:'#fff',color:'#111',border:'2px solid #111',padding:'12px',fontSize:'15px',fontWeight:700,cursor:'pointer'}}>취소</button>
+          </div>
+        </div>
+      )}
+
+      {keyringModal && (
+        <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.5)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:50,padding:'20px'}}>
+          <div style={{background:'#fff',width:'100%',maxWidth:'390px',padding:'24px'}}>
+            <div style={{fontSize:'18px',fontWeight:900,color:'#111',marginBottom:'8px'}}>🪙 키링 교환 신청</div>
+            <div style={{fontSize:'13px',fontWeight:700,color:'#888',marginBottom:'16px'}}>{keyringModal.login_code} · {keyringModal.description}</div>
+            <div style={{background:'#f0f0f0',padding:'12px',marginBottom:'16px',fontSize:'13px',fontWeight:700,color:'#111'}}>회원이 업사이클링 키링 교환을 신청했습니다. 키링을 수령했나요?</div>
+            <button onClick={approveKeyring} style={{width:'100%',background:'#111',color:'#fff',border:'none',padding:'14px',fontSize:'15px',fontWeight:700,cursor:'pointer',marginBottom:'8px'}}>수령 완료</button>
+            <button onClick={rejectKeyring} style={{width:'100%',background:'#fff',color:'#E24B4A',border:'2px solid #E24B4A',padding:'12px',fontSize:'15px',fontWeight:700,cursor:'pointer'}}>반려</button>
           </div>
         </div>
       )}

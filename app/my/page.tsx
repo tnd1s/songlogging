@@ -81,7 +81,7 @@ export default function MyPage() {
       <button onClick={handleLogout} style={{width:'calc(100% - 32px)',margin:'0 16px',background:'#111',color:'#fff',border:'none',borderRadius:'0',padding:'16px',fontSize:'14px',fontWeight:700,cursor:'pointer'}}>로그아웃</button>
 
       <div style={{background:'#111',display:'flex',position:'fixed',bottom:0,width:'100%',maxWidth:'430px'}}>
-        {[['🏠','피드','/feed'],['🎯','미션','/mission'],['🏆','랭킹','/ranking'],['🛍️','상점','/shop'],['👤','마이','/my']].map(([icon,label,path])=>(
+        {[['🏠','피드','/feed'],['🎯','미션','/mission'],['🛍️','상점','/shop'],['👤','마이','/my']].map(([icon,label,path])=>(
           <button key={path} onClick={()=>router.push(path as string)} style={{flex:1,padding:'12px 4px 10px',display:'flex',flexDirection:'column',alignItems:'center',gap:'3px',background:'none',border:'none',cursor:'pointer',color:path==='/my'?'#5DD85A':'#666',fontSize:'10px',fontWeight:700}}>
             <span style={{fontSize:'20px'}}>{icon}</span>{label}
           </button>
