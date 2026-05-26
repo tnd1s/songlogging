@@ -46,7 +46,7 @@ export default function MyPage() {
   return (
     <main style={{background:'#5DD85A',minHeight:'100vh',maxWidth:'430px',margin:'0 auto',paddingBottom:'64px',fontFamily:'inherit'}}>
       <div style={{padding:'18px 20px 10px',position:'sticky',top:0,background:'#5DD85A',zIndex:10}}>
-        <div style={{fontSize:'22px',fontWeight:900,color:'#111'}}>마이 🌿</div>
+        <div style={{fontSize:'22px',fontWeight:900,color:'#111'}}>마이 </div>
       </div>
 
       <div style={{background:'#111',margin:'0 16px 14px',padding:'24px 20px',textAlign:'center'}}>

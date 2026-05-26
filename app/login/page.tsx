@@ -25,7 +25,7 @@ export default function LoginPage() {
 
   return (
     <main style={{background:'#5DD85A',minHeight:'100vh',maxWidth:'430px',margin:'0 auto',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'40px 24px',gap:'28px',fontFamily:'inherit'}}>
-      <div style={{fontSize:'52px'}}>🌿</div>
+      <div style={{fontSize:'52px'}}></div>
       <div style={{textAlign:'center'}}>
         <div style={{fontSize:'32px',fontWeight:900,color:'#111',lineHeight:1.2}}>안녕하세요!<br/>송로깅입니다 :)</div>
         <div style={{fontSize:'14px',color:'#111',opacity:0.5,marginTop:'8px'}}>로그인 코드로 로그인해 주세요.</div>
