@@ -78,7 +78,7 @@ export default function FeedPage() {
 
       <div style={{background:'#111',margin:'0 16px 12px',padding:'12px 16px',display:'flex',alignItems:'center',gap:'10px'}}>
         <span style={{fontSize:'16px'}}>📢</span>
-        <span style={{fontSize:'13px',fontWeight:700,color:'#5DD85A'}}>환경의 날 이벤트! 이번 주 포인트 2배 🎉</span>
+        <span style={{fontSize:'13px',fontWeight:700,color:'#5DD85A'}}>안녕하세요 송현여고 플로깅 & 리사이클 송로깅 입니다 :)</span>
       </div>
 
       {posts.length === 0 && (
