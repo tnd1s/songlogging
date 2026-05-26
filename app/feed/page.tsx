@@ -67,7 +67,7 @@ export default function FeedPage() {
   return (
     <main style={{background:'#5DD85A',minHeight:'100vh',maxWidth:'430px',margin:'0 auto',paddingBottom:'64px',fontFamily:'inherit'}}>
       <div style={{padding:'18px 20px 10px',display:'flex',alignItems:'center',justifyContent:'space-between',position:'sticky',top:0,background:'#5DD85A',zIndex:10}}>
-        <div style={{fontSize:'22px',fontWeight:900,color:'#111'}}>송로깅 🌿</div>
+        <div style={{fontSize:'22px',fontWeight:900,color:'#111'}}><span style={{display:'flex',alignItems:'center',gap:'8px'}}><img src='/icon.png' style={{width:'28px',height:'28px',objectFit:'contain'}} /><span>송로깅</span></span></div>
         <div style={{background:'#111',color:'#5DD85A',padding:'6px 14px',fontSize:'13px',fontWeight:700}}>{myPoints.toLocaleString()} P</div>
       </div>
 
