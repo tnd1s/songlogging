@@ -133,7 +133,7 @@ export default function AdminPage() {
   return (
     <main style={{background:'#5DD85A',minHeight:'100vh',maxWidth:'430px',margin:'0 auto',fontFamily:'inherit'}}>
       <div style={{background:'#111',padding:'18px 20px',display:'flex',alignItems:'center',justifyContent:'space-between',position:'sticky',top:0,zIndex:10}}>
-        <div style={{fontSize:'22px',fontWeight:900,color:'#5DD85A'}}>관리자 🌿</div>
+        <div style={{fontSize:'22px',fontWeight:900,color:'#5DD85A'}}><span style={{display:'flex',alignItems:'center',gap:'8px'}}><img src='/icon.png' style={{width:'28px',height:'28px',objectFit:'contain'}} /><span>관리자</span></span></div>
         <button onClick={handleLogout} style={{background:'none',border:'none',color:'#888',fontSize:'13px',fontWeight:700,cursor:'pointer'}}>로그아웃</button>
       </div>
 
