@@ -38,7 +38,7 @@ export default function MyPage() {
     router.push('/login')
   }
 
-  const missionLabel = (t:string) => t==='walk'?' 걷기':t==='trash'?' 쓰레기 줍기':' 분리수거'
+  const missionLabel = (t:string) => t==='walk'?'🚶 걷기':t==='trash'?'🗑️ 쓰레기 줍기':t==='recycle'?'♻️ 분리수거':t==='invite'?'📱 친구초대':'🪙 병뚜껑'
   const statusLabel = (s:string) => s==='pending'?'검토 중':s==='approved'?'승인 완료':'반려'
   const statusBg = (s:string) => s==='pending'?'#fff3cd':s==='approved'?'#d4edda':'#f8d7da'
   const statusColor = (s:string) => s==='pending'?'#856404':s==='approved'?'#155724':'#721c24'
@@ -46,11 +46,14 @@ export default function MyPage() {
   return (
     <main style={{background:'#5DD85A',minHeight:'100vh',maxWidth:'430px',margin:'0 auto',paddingBottom:'64px',fontFamily:'inherit'}}>
       <div style={{padding:'18px 20px 10px',position:'sticky',top:0,background:'#5DD85A',zIndex:10}}>
-        <div style={{fontSize:'22px',fontWeight:900,color:'#111'}}><span style={{display:'flex',alignItems:'center',gap:'8px'}}><img src='/icon.png' style={{width:'28px',height:'28px',objectFit:'contain'}} /><span>마이</span></span></div>
+        <div style={{fontSize:'22px',fontWeight:900,color:'#111',display:'flex',alignItems:'center',gap:'8px'}}>
+          <img src="/icon.png" style={{width:'28px',height:'28px',objectFit:'contain'}} />
+          <span>마이</span>
+        </div>
       </div>
 
       <div style={{background:'#111',margin:'0 16px 14px',padding:'24px 20px',textAlign:'center'}}>
-        <div style={{width:'64px',height:'64px',background:'#5DD85A',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'26px',margin:'0 auto 12px'}}></div>
+        <img src="/icon.png" style={{width:'72px',height:'72px',objectFit:'contain',margin:'0 auto 12px',display:'block'}} />
         <div style={{fontSize:'18px',fontWeight:900,color:'#fff'}}>{user?.login_code}</div>
         <div style={{fontSize:'13px',fontWeight:700,color:'#888',marginTop:'4px'}}>보유 포인트</div>
         <div style={{fontSize:'32px',fontWeight:900,color:'#5DD85A'}}>{myPoints.toLocaleString()} P</div>
@@ -81,9 +84,9 @@ export default function MyPage() {
       <button onClick={handleLogout} style={{width:'calc(100% - 32px)',margin:'0 16px',background:'#111',color:'#fff',border:'none',borderRadius:'0',padding:'16px',fontSize:'14px',fontWeight:700,cursor:'pointer'}}>로그아웃</button>
 
       <div style={{background:'#111',display:'flex',position:'fixed',bottom:0,width:'100%',maxWidth:'430px'}}>
-        {[['','피드','/feed'],['','미션','/mission'],['','상점','/shop'],['','마이','/my']].map(([icon,label,path])=>(
+        {[['피드','/feed'],['미션','/mission'],['상점','/shop'],['마이','/my']].map(([label,path])=>(
           <button key={path} onClick={()=>router.push(path as string)} style={{flex:1,padding:'12px 4px 10px',display:'flex',flexDirection:'column',alignItems:'center',gap:'3px',background:'none',border:'none',cursor:'pointer',color:path==='/my'?'#5DD85A':'#666',fontSize:'10px',fontWeight:700}}>
-            <span style={{fontSize:'20px'}}>{icon}</span>{label}
+            {label}
           </button>
         ))}
       </div>

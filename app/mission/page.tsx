@@ -84,11 +84,11 @@ export default function MissionPage() {
   const btn:React.CSSProperties = {width:'100%',background:'#111',color:'#fff',border:'none',borderRadius:'0',padding:'16px',fontSize:'16px',fontWeight:700,cursor:'pointer'}
 
   const missions = [
-    {type:'walk',icon:'',name:'걷기 챌린지',desc:'3,000보 이상 걷고 인증 사진 업로드',pt:'+3,000P'},
-    {type:'trash',icon:'',name:'쓰레기 줍기',desc:'봉투 한가득 쓰레기를 줍고 인증',pt:'+2,000P'},
-    {type:'recycle',icon:'',name:'분리수거',desc:'재활용품 분리수거 인증 사진 업로드',pt:'+1,000P'},
-    {type:'invite',icon:'',name:'친구 초대 & SNS 공유',desc:'친구 초대 또는 SNS 공유 인증 사진 업로드',pt:'+500P'},
-    {type:'cap',icon:'',name:'병뚜껑 모으기',desc:'15개당 500P / 30개부터 키링 교환 가능',pt:'+500P~'},
+    {type:'walk',icon:'🚶',name:'걷기 챌린지',desc:'3,000보 이상 걷고 인증 사진 업로드',pt:'+3,000P'},
+    {type:'trash',icon:'🗑️',name:'쓰레기 줍기',desc:'봉투 한가득 쓰레기를 줍고 인증',pt:'+2,000P'},
+    {type:'recycle',icon:'♻️',name:'분리수거',desc:'재활용품 분리수거 인증 사진 업로드',pt:'+1,000P'},
+    {type:'invite',icon:'📱',name:'친구 초대 & SNS 공유',desc:'친구 초대 또는 SNS 공유 인증 사진 업로드',pt:'+500P'},
+    {type:'cap',icon:'🪙',name:'병뚜껑 모으기',desc:'15개당 500P / 30개부터 키링 교환 가능',pt:'+500P~'},
   ]
 
   return (
