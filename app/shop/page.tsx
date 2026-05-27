@@ -42,7 +42,7 @@ export default function ShopPage() {
     setModal(null)
     setCode('')
     setQty(1)
-    alert(`${modal.name} ${qty}개 구매 완료! 🎉`)
+    alert(`${modal.name} ${qty}개 구매 완료! `)
     fetchProducts()
   }
 
@@ -114,7 +114,7 @@ export default function ShopPage() {
       )}
 
       <div style={{background:'#111',display:'flex',position:'fixed',bottom:0,width:'100%',maxWidth:'430px'}}>
-        {[['🏠','피드','/feed'],['🎯','미션','/mission'],['🛍️','상점','/shop'],['👤','마이','/my']].map(([icon,label,path])=>(
+        {[['','피드','/feed'],['','미션','/mission'],['','상점','/shop'],['','마이','/my']].map(([icon,label,path])=>(
           <button key={path} onClick={()=>router.push(path as string)} style={{flex:1,padding:'12px 4px 10px',display:'flex',flexDirection:'column',alignItems:'center',gap:'3px',background:'none',border:'none',cursor:'pointer',color:path==='/shop'?'#5DD85A':'#666',fontSize:'10px',fontWeight:700}}>
             <span style={{fontSize:'20px'}}>{icon}</span>{label}
           </button>

@@ -84,11 +84,11 @@ export default function MissionPage() {
   const btn:React.CSSProperties = {width:'100%',background:'#111',color:'#fff',border:'none',borderRadius:'0',padding:'16px',fontSize:'16px',fontWeight:700,cursor:'pointer'}
 
   const missions = [
-    {type:'walk',icon:'🚶',name:'걷기 챌린지',desc:'3,000보 이상 걷고 인증 사진 업로드',pt:'+3,000P'},
-    {type:'trash',icon:'🗑️',name:'쓰레기 줍기',desc:'봉투 한가득 쓰레기를 줍고 인증',pt:'+2,000P'},
-    {type:'recycle',icon:'♻️',name:'분리수거',desc:'재활용품 분리수거 인증 사진 업로드',pt:'+1,000P'},
-    {type:'invite',icon:'📱',name:'친구 초대 & SNS 공유',desc:'친구 초대 또는 SNS 공유 인증 사진 업로드',pt:'+500P'},
-    {type:'cap',icon:'🪙',name:'병뚜껑 모으기',desc:'15개당 500P / 30개부터 키링 교환 가능',pt:'+500P~'},
+    {type:'walk',icon:'',name:'걷기 챌린지',desc:'3,000보 이상 걷고 인증 사진 업로드',pt:'+3,000P'},
+    {type:'trash',icon:'',name:'쓰레기 줍기',desc:'봉투 한가득 쓰레기를 줍고 인증',pt:'+2,000P'},
+    {type:'recycle',icon:'',name:'분리수거',desc:'재활용품 분리수거 인증 사진 업로드',pt:'+1,000P'},
+    {type:'invite',icon:'',name:'친구 초대 & SNS 공유',desc:'친구 초대 또는 SNS 공유 인증 사진 업로드',pt:'+500P'},
+    {type:'cap',icon:'',name:'병뚜껑 모으기',desc:'15개당 500P / 30개부터 키링 교환 가능',pt:'+500P~'},
   ]
 
   return (
@@ -121,7 +121,7 @@ export default function MissionPage() {
         {myRequests.map(r=>(
           <div key={r.id} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'8px 0',borderBottom:'1px solid #eee'}}>
             <span style={{fontSize:'13px',fontWeight:700,color:'#111'}}>
-              {r.mission_type==='walk'?'🚶 걷기':r.mission_type==='trash'?'🗑️ 쓰레기 줍기':r.mission_type==='recycle'?'♻️ 분리수거':r.mission_type==='invite'?'📱 친구초대':'🪙 병뚜껑'}
+              {r.mission_type==='walk'?' 걷기':r.mission_type==='trash'?' 쓰레기 줍기':r.mission_type==='recycle'?' 분리수거':r.mission_type==='invite'?' 친구초대':' 병뚜껑'}
             </span>
             <span style={{fontSize:'11px',fontWeight:700,padding:'4px 10px',background:statusBg(r.status),color:statusColor(r.status)}}>{statusLabel(r.status)}{r.status==='approved'?` +${r.points.toLocaleString()}P`:''}</span>
           </div>
@@ -164,7 +164,7 @@ export default function MissionPage() {
                 {capCount >= 30 && (
                   <div style={{display:'flex',gap:'8px',marginBottom:'10px'}}>
                     <button onClick={()=>setCapReward('point')} style={{flex:1,padding:'12px',fontWeight:700,fontSize:'14px',border:'2px solid #111',background:capReward==='point'?'#111':'#fff',color:capReward==='point'?'#fff':'#111',cursor:'pointer'}}>💰 1,000P 받기</button>
-                    <button onClick={()=>setCapReward('keyring')} style={{flex:1,padding:'12px',fontWeight:700,fontSize:'14px',border:'2px solid #111',background:capReward==='keyring'?'#111':'#fff',color:capReward==='keyring'?'#fff':'#111',cursor:'pointer'}}>🪙 키링 교환</button>
+                    <button onClick={()=>setCapReward('keyring')} style={{flex:1,padding:'12px',fontWeight:700,fontSize:'14px',border:'2px solid #111',background:capReward==='keyring'?'#111':'#fff',color:capReward==='keyring'?'#fff':'#111',cursor:'pointer'}}> 키링 교환</button>
                   </div>
                 )}
               </div>
@@ -175,7 +175,7 @@ export default function MissionPage() {
               <div style={{fontSize:'13px',fontWeight:700,color:'#111',marginBottom:'4px'}}>한마디</div>
               <input value={desc} onChange={e=>setDesc(e.target.value)} placeholder="미션 인증 내용을 간단히 적어주세요" style={{width:'100%',border:'none',borderBottom:'2px solid #111',background:'transparent',padding:'8px 4px',fontSize:'14px',fontWeight:700,outline:'none',color:'#111'}} />
             </div>
-            {modal==='invite' && <div style={{background:'#f0f0f0',padding:'10px 14px',marginBottom:'12px',fontSize:'12px',fontWeight:700,color:'#555'}}>📢 친구 초대 및 SNS 공유 인증은 피드에 게시되지 않아요</div>}
+            {modal==='invite' && <div style={{background:'#f0f0f0',padding:'10px 14px',marginBottom:'12px',fontSize:'12px',fontWeight:700,color:'#555'}}> 친구 초대 및 SNS 공유 인증은 피드에 게시되지 않아요</div>}
             <button onClick={handleUpload} disabled={uploading} style={{...btn,marginBottom:'8px'}}>{uploading?'업로드 중...':'업로드 및 포인트 신청'}</button>
             <button onClick={()=>setModal(null)} style={{...btn,background:'#fff',color:'#111',border:'2px solid #111'}}>취소</button>
           </div>
@@ -183,7 +183,7 @@ export default function MissionPage() {
       )}
 
       <div style={{background:'#111',display:'flex',position:'fixed',bottom:0,width:'100%',maxWidth:'430px'}}>
-        {[['🏠','피드','/feed'],['🎯','미션','/mission'],['🛍️','상점','/shop'],['👤','마이','/my']].map(([icon,label,path])=>(
+        {[['','피드','/feed'],['','미션','/mission'],['','상점','/shop'],['','마이','/my']].map(([icon,label,path])=>(
           <button key={path} onClick={()=>router.push(path as string)} style={{flex:1,padding:'12px 4px 10px',display:'flex',flexDirection:'column',alignItems:'center',gap:'3px',background:'none',border:'none',cursor:'pointer',color:path==='/mission'?'#5DD85A':'#666',fontSize:'10px',fontWeight:700}}>
             <span style={{fontSize:'20px'}}>{icon}</span>{label}
           </button>

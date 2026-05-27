@@ -37,7 +37,7 @@ export default function RegisterPage() {
     }
 
     setLoading(false)
-    alert('가입 완료! 로그인해주세요 🎉')
+    alert('가입 완료! 로그인해주세요 ')
     router.push('/login')
   }
 

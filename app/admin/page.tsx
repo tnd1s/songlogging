@@ -69,7 +69,7 @@ export default function AdminPage() {
     }
     await supabase.from('point_requests').update({ status: 'approved', reviewed_at: new Date().toISOString() }).eq('id', r.id)
     await supabase.rpc('increment_points', { user_id: r.user_id, amount: r.points })
-    alert('포인트가 지급되었습니다 ✅')
+    alert('포인트가 지급되었습니다 ')
     fetchPending()
   }
 
@@ -77,14 +77,14 @@ export default function AdminPage() {
     await supabase.from('point_requests').update({ status: 'approved', reviewed_at: new Date().toISOString(), points: capPoint }).eq('id', capModal.id)
     await supabase.rpc('increment_points', { user_id: capModal.user_id, amount: capPoint })
     setCapModal(null)
-    alert(`${capPoint}P 지급되었습니다 ✅`)
+    alert(`${capPoint}P 지급되었습니다 `)
     fetchPending()
   }
 
   async function approveKeyring() {
     await supabase.from('point_requests').update({ status: 'approved', reviewed_at: new Date().toISOString(), points: 0 }).eq('id', keyringModal.id)
     setKeyringModal(null)
-    alert('키링 수령 승인 완료 ✅')
+    alert('키링 수령 승인 완료 ')
     fetchPending()
   }
 
@@ -120,7 +120,7 @@ export default function AdminPage() {
 
   async function completeOrder(id: string) {
     await supabase.from('orders').update({ status: 'done' }).eq('id', id)
-    alert('수령 완료 처리되었습니다 ✅')
+    alert('수령 완료 처리되었습니다 ')
     fetchOrders()
   }
 
@@ -129,7 +129,7 @@ export default function AdminPage() {
     setPosting(true)
     await supabase.from('posts').insert({
       user_id: userId,
-      mission_type: '📢 관리자',
+      mission_type: ' 관리자',
       description: writeDesc,
       is_notice: isNotice,
     })
@@ -146,7 +146,7 @@ export default function AdminPage() {
     router.push('/login')
   }
 
-  const missionLabel = (t:string) => t==='walk'?'🚶 걷기':t==='trash'?'🗑️ 쓰레기 줍기':t==='recycle'?'♻️ 분리수거':t==='invite'?'📱 친구초대':t==='cap'?'🪙 병뚜껑':'📢 관리자'
+  const missionLabel = (t:string) => t==='walk'?' 걷기':t==='trash'?' 쓰레기 줍기':t==='recycle'?' 분리수거':t==='invite'?' 친구초대':t==='cap'?' 병뚜껑':' 관리자'
   const btn:React.CSSProperties = {fontSize:'12px',fontWeight:700,padding:'6px 12px',cursor:'pointer',border:'2px solid #111',background:'#111',color:'#fff'}
   const btnOut:React.CSSProperties = {fontSize:'12px',fontWeight:700,padding:'6px 12px',cursor:'pointer',border:'2px solid #E24B4A',background:'#fff',color:'#E24B4A'}
 
@@ -178,7 +178,7 @@ export default function AdminPage() {
                 <div style={{display:'flex',alignItems:'center',gap:'12px'}}>
                   <div style={{flex:1}}>
                     <div style={{fontSize:'13px',fontWeight:700,color:'#111'}}>{r.login_code}</div>
-                    <div style={{fontSize:'12px',fontWeight:700,color:'#888',marginTop:'2px'}}>{missionLabel(r.mission_type)} · {r.description?.includes('키링') ? '🪙 키링 교환 신청' : `+${r.points.toLocaleString()}P`}</div>
+                    <div style={{fontSize:'12px',fontWeight:700,color:'#888',marginTop:'2px'}}>{missionLabel(r.mission_type)} · {r.description?.includes('키링') ? ' 키링 교환 신청' : `+${r.points.toLocaleString()}P`}</div>
                     {r.description && <div style={{fontSize:'11px',color:'#5DD85A',fontWeight:700,marginTop:'2px'}}>{r.description}</div>}
                   </div>
                   <div style={{display:'flex',gap:'6px'}}>
@@ -194,7 +194,7 @@ export default function AdminPage() {
         {tab==='feed' && (
           <>
             <div style={{padding:'0 16px 10px'}}>
-              <button onClick={()=>setWriteModal(true)} style={{width:'100%',background:'#111',color:'#fff',border:'none',padding:'14px',fontSize:'14px',fontWeight:700,cursor:'pointer'}}>✏️ 관리자 글 작성</button>
+              <button onClick={()=>setWriteModal(true)} style={{width:'100%',background:'#111',color:'#fff',border:'none',padding:'14px',fontSize:'14px',fontWeight:700,cursor:'pointer'}}> 관리자 글 작성</button>
             </div>
             {posts.map(p=>(
               <div key={p.id} style={{background:'#fff',margin:'0 16px 12px'}}>
@@ -287,7 +287,7 @@ export default function AdminPage() {
       {capModal && (
         <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.5)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:50,padding:'20px'}}>
           <div style={{background:'#fff',width:'100%',maxWidth:'390px',padding:'24px'}}>
-            <div style={{fontSize:'18px',fontWeight:900,color:'#111',marginBottom:'8px'}}>🪙 병뚜껑 포인트 부여</div>
+            <div style={{fontSize:'18px',fontWeight:900,color:'#111',marginBottom:'8px'}}> 병뚜껑 포인트 부여</div>
             <div style={{fontSize:'13px',fontWeight:700,color:'#888',marginBottom:'16px'}}>{capModal.login_code} · {capModal.description}</div>
             <div style={{display:'flex',gap:'8px',marginBottom:'16px'}}>
               <button onClick={()=>setCapPoint(500)} style={{flex:1,padding:'12px',fontWeight:700,fontSize:'14px',border:'2px solid #111',background:capPoint===500?'#111':'#fff',color:capPoint===500?'#fff':'#111',cursor:'pointer'}}>500P</button>
@@ -302,7 +302,7 @@ export default function AdminPage() {
       {keyringModal && (
         <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.5)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:50,padding:'20px'}}>
           <div style={{background:'#fff',width:'100%',maxWidth:'390px',padding:'24px'}}>
-            <div style={{fontSize:'18px',fontWeight:900,color:'#111',marginBottom:'8px'}}>🪙 키링 교환 신청</div>
+            <div style={{fontSize:'18px',fontWeight:900,color:'#111',marginBottom:'8px'}}> 키링 교환 신청</div>
             <div style={{fontSize:'13px',fontWeight:700,color:'#888',marginBottom:'16px'}}>{keyringModal.login_code} · {keyringModal.description}</div>
             <div style={{background:'#f0f0f0',padding:'12px',marginBottom:'16px',fontSize:'13px',fontWeight:700,color:'#111'}}>회원이 업사이클링 키링 교환을 신청했습니다. 키링을 수령했나요?</div>
             <button onClick={approveKeyring} style={{width:'100%',background:'#111',color:'#fff',border:'none',padding:'14px',fontSize:'15px',fontWeight:700,cursor:'pointer',marginBottom:'8px'}}>수령 완료</button>

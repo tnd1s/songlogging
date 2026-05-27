@@ -77,7 +77,7 @@ export default function FeedPage() {
       </div>
 
       <div style={{background:'#111',margin:'0 16px 12px',padding:'12px 16px',display:'flex',alignItems:'center',gap:'10px'}}>
-        <span style={{fontSize:'16px'}}>📢</span>
+        <span style={{fontSize:'16px'}}></span>
         <span style={{fontSize:'13px',fontWeight:700,color:'#5DD85A'}}>안녕하세요 송현여고 플로깅 & 리사이클 송로깅 입니다 :)</span>
       </div>
 
@@ -99,9 +99,9 @@ export default function FeedPage() {
           <div style={{padding:'12px 16px',fontSize:'14px',fontWeight:700,color:'#111',lineHeight:1.5}}>{post.description}</div>
           <div style={{padding:'10px 16px',display:'flex',gap:'16px',borderTop:'2px solid #111'}}>
             <button onClick={()=>toggleLike(post.id)} style={{background:'none',border:'none',cursor:'pointer',fontSize:'13px',fontWeight:700,color: post.likes.some((l:any)=>l.user_id===myId) ? '#E24B4A' : '#111'}}>
-              ❤️ {post.likes?.length || 0}
+               {post.likes?.length || 0}
             </button>
-            <span style={{fontSize:'13px',fontWeight:700,color:'#111'}}>💬 {post.comments?.length || 0}</span>
+            <span style={{fontSize:'13px',fontWeight:700,color:'#111'}}> {post.comments?.length || 0}</span>
           </div>
           <div style={{padding:'4px 16px 12px'}}>
             {post.comments?.slice(-2).map((c:any) => (
@@ -122,7 +122,7 @@ export default function FeedPage() {
       ))}
 
       <div style={{background:'#111',display:'flex',position:'fixed',bottom:0,width:'100%',maxWidth:'430px'}}>
-        {[['🏠','피드','/feed'],['🎯','미션','/mission'],['🛍️','상점','/shop'],['👤','마이','/my']].map(([icon,label,path])=>(
+        {[['','피드','/feed'],['','미션','/mission'],['','상점','/shop'],['','마이','/my']].map(([icon,label,path])=>(
           <button key={path} onClick={()=>router.push(path as string)} style={{flex:1,padding:'12px 4px 10px',display:'flex',flexDirection:'column',alignItems:'center',gap:'3px',background:'none',border:'none',cursor:'pointer',color:path==='/feed'?'#5DD85A':'#666',fontSize:'10px',fontWeight:700}}>
             <span style={{fontSize:'20px'}}>{icon}</span>{label}
           </button>
