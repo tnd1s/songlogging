@@ -46,7 +46,7 @@ export default function ShopPage() {
     fetchProducts()
   }
 
-  const emoji = (name:string) => name.includes('머그') ? '☕' : '🫙'
+  
   const btn:React.CSSProperties = {width:'100%',background:'#111',color:'#fff',border:'none',borderRadius:'0',padding:'16px',fontSize:'16px',fontWeight:700,cursor:'pointer'}
   const inputStyle:React.CSSProperties = {width:'100%',padding:'14px',border:'none',borderBottom:'2.5px solid #111',background:'transparent',fontSize:'16px',fontWeight:700,outline:'none',color:'#111'}
 
@@ -69,7 +69,7 @@ export default function ShopPage() {
           const soldout = left <= 0
           return (
             <div key={p.id} onClick={()=>!soldout&&setModal(p)} style={{background:'#fff',cursor:soldout?'not-allowed':'pointer',opacity:soldout?0.55:1}}>
-              <div style={{width:'100%',height:'140px',background:'#d4f0d2',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'52px'}}>{emoji(p.name)}</div>
+              <img src={p.name.includes('머그')?'/mug.jpeg':p.name.includes('텀블러')?'/tumbler.jpeg':'/keyring.png'} style={{width:'100%',height:'140px',objectFit:'cover'}} />
               <div style={{padding:'12px 14px'}}>
                 <div style={{fontSize:'15px',fontWeight:900,color:'#111',marginBottom:'4px'}}>{p.name}</div>
                 <div style={{fontSize:'13px',fontWeight:700,color:'#111'}}>{p.price.toLocaleString()}P</div>
@@ -87,7 +87,7 @@ export default function ShopPage() {
             <div style={{width:'40px',height:'4px',background:'#ddd',margin:'0 auto 16px'}}></div>
             <div style={{fontSize:'20px',fontWeight:900,color:'#111',marginBottom:'16px'}}>구매하기</div>
             <div style={{display:'flex',gap:'20px',alignItems:'flex-start',marginBottom:'20px'}}>
-              <div style={{width:'100px',height:'100px',background:'#d4f0d2',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'48px',flexShrink:0}}>{emoji(modal.name)}</div>
+              <img src={modal.name.includes('머그')?'/mug.jpeg':modal.name.includes('텀블러')?'/tumbler.jpeg':'/keyring.png'} style={{width:'100px',height:'100px',objectFit:'cover',flexShrink:0}} />
               <div>
                 <div style={{fontSize:'22px',fontWeight:900,color:'#111',marginBottom:'4px'}}>{modal.name}</div>
                 <div style={{fontSize:'16px',fontWeight:700,color:'#111'}}>{modal.price.toLocaleString()}P</div>
