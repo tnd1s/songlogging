@@ -99,7 +99,7 @@ export default function FeedPage() {
           <div style={{padding:'12px 16px',fontSize:'14px',fontWeight:700,color:'#111',lineHeight:1.5}}>{post.description}</div>
           <div style={{padding:'10px 16px',display:'flex',gap:'16px',borderTop:'2px solid #111'}}>
             <button onClick={()=>toggleLike(post.id)} style={{background:'none',border:'none',cursor:'pointer',fontSize:'13px',fontWeight:700,color: post.likes.some((l:any)=>l.user_id===myId) ? '#E24B4A' : '#111'}}>
-               {post.likes?.length || 0}
+               ❤️ {post.likes?.length || 0}
             </button>
             <span style={{fontSize:'13px',fontWeight:700,color:'#111'}}> {post.comments?.length || 0}</span>
           </div>
